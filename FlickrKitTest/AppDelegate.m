@@ -7,12 +7,34 @@
 //
 
 #import "AppDelegate.h"
+#import "FlickrKit.h"
+
 
 @implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    NSString *scheme = [url scheme];
+	if([@"flickrkitdemo" isEqualToString:scheme]) {
+		// I don't recommend doing it like this, it's just a demo... I use an authentication
+		// controller singleton object in my projects
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"UserAuthCallbackNotification" object:url userInfo:nil];
+    }
+    return YES;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    // Initialise FlickrKit with your flickr api key and shared secret
+	NSString *apiKey = @"68514fe878a39bf9b9853ae77b31e0b";
+	NSString *secret = @"9e919502e9ceea1f";
+    if (!apiKey) {
+        NSLog(@"\n----------------------------------\nYou need to enter your own 'apiKey' and 'secret' in FKAppDelegate for the demo to run. \n\nYou can get these from your Flickr account settings.\n----------------------------------\n");
+        exit(0);
+    }
+    [[FlickrKit sharedFlickrKit] initializeWithAPIKey:apiKey sharedSecret:secret];
+
     return YES;
 }
 							
